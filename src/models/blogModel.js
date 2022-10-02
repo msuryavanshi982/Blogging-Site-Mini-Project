@@ -1,8 +1,7 @@
 const mongoose = require("mongoose");
-let ObjectId = mongoose.Schema.Types.ObjectId;
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
-const blogSchema = new mongoose.Schema(
-  {
+const blogSchema = new mongoose.Schema({
     title: {
       type: String,
       required: true,
@@ -16,7 +15,7 @@ const blogSchema = new mongoose.Schema(
     authorId: {
       type: ObjectId,
       required: true,
-      ref: "author",
+      ref: "author", //ObjectId here i take reference of author collection (linkings two document)
     },
     tags: {
       type: [String],
@@ -24,31 +23,27 @@ const blogSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      trim: true,
       required: true,
+      trim: true,
     },
     subcategory: {
       type: [String],
       trim: true,
     },
-    deletedAt: {
-      type: Date,
-      default: null,
-    },
+    deletedAt: { type: Date },
     isDeleted: {
       type: Boolean,
       default: false,
     },
     publishedAt: {
       type: Date,
-      default: null,
     },
+
     isPublished: {
       type: Boolean,
       default: false,
     },
-  },
-  { timestamps: true }
+  },{ timestamps: true }
 );
 
 module.exports = mongoose.model("blog", blogSchema);

@@ -1,5 +1,12 @@
 const mongoose = require('mongoose');
 
+//Key Validation
+const isEmpty = function (value) {
+  if (typeof value === "undefined" || value === null) return false;
+  if (typeof value === "string" && value.trim().length === 0) return false;
+  return true;
+};
+
 //Name Validation
 const isValidName = function (name) {
   const nameRegex = /^[a-zA-Z ]+$/;
@@ -19,25 +26,10 @@ const isValidPassword = function (password) {
     /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,15}$/;
   return passwordRegex.test(password);
 };
-//Value Validation
-const isEmpty = function (value) {
-    if (typeof value === "undefined" || value === null) return false;
-    if (typeof value === "string" && value.trim().length === 0) return false;
-    return true;
-  };
 
-  // ObjectId
-  const isValidObjectId = (objectId) => {
+// ObjectId validation 
+const isValidObjectId = (objectId) => {
     return mongoose.Types.ObjectId.isValid(objectId);
   };
-  
-module.exports = {
-    isEmpty,
-    isValidName,
-    isValidEmail,
-    isValidObjectId,
-    isValidPassword,
-}  
 
-
-
+module.exports = { isEmpty, isValidName, isValidEmail, isValidPassword, isValidObjectId };

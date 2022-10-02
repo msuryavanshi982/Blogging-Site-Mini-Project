@@ -1,10 +1,10 @@
 const express = require("express");
-const bodyParser = require("body-parser");
+// const bodyParser = require("body-parser");
 const route = require("./routes/route");
 const { default: mongoose } = require("mongoose");
 const app = express();
 
-app.use(bodyParser.json());
+app.use(express.json());
 
 let url ="mongodb+srv://projectBlogGroup4:vtbjJPPyqvrHsBXQ@cluster0.rrdjyhd.mongodb.net/project-1";
 let port = process.env.PORT || 3000;

@@ -1,34 +1,32 @@
-const express = require("express");
-const router = express.Router();
+const express= require('express');
+const router = express.Router(); 
 const authorController = require("../controllers/authorController");
 const blogController = require("../controllers/blogController");
-const auth = require("../middleware/auth");
+const middleware = require('../middleware/auth')
 
-//______________________________post api (author creation)__________________________________>>>
-router.post("/authors", authorController.createAuthor);
+let {createAuthor,loginAuthor} = authorController;
+let {createBlog,getBlogs,updateBlog,deleteBlog,deleteByQuery} = blogController;
+let {authenticate,authorize,authorizeByQuery} = middleware;
 
-//_______________________________post api for login aouthor ________________________________>>>
-router.post("/login", authorController.loginAuthor);
+// ======> Create Author Api <=========
+router.post('/authors', createAuthor);
 
-//______________________________post api (blog creation)_____________________________________>>>
-router.post("/blogs", auth.authentication,blogController.createBlog);
+// ======> Author Login Api <==========
+router.post('/login', loginAuthor);
 
-//______________________________get api (blog document)______________________________________>>>
+// ======> Create Blog Api <===========
+router.post('/blogs', authenticate, createBlog);
 
-router.get("/blogs", auth.authentication, blogController.getBlogs);
+// ======> Create Blog Api <===========
+router.get('/blogs',authenticate, getBlogs);
 
-//______________________________put api (blog updation)_______________________________________>>>
-router.put("/blogs/:blogId", auth.authentication,auth.authorization,blogController.updatedBlog);
+// ======> Update Blogs Api <==========
+router.put('/blogs/:blogId',authenticate, authorize, updateBlog);
 
-//_______________________________delete api-1_________________________________________________>>>
-router.delete("/blogs/:blogId", auth.authentication,auth.authorization,blogController.deletedBlog);
+// ======> Delete Blogs Api <==========
+router.delete('/blogs/:blogId',authenticate, authorize, deleteBlog);
 
-//_______________________________delete api-2_________________________________________________>>>
-router.delete("/blogs",auth.authentication,auth.authoriseByQuery, blogController.deleteByQueryParams);
+// ======> Delete Blogs By Query Params <=======
+router.delete('/blogs',authenticate, authorizeByQuery, deleteByQuery);
 
-//===============================================================================================
-
-module.exports = router;
-
-
-
+module.exports= router;
