@@ -29,4 +29,10 @@ router.delete('/blogs/:blogId',authenticate, authorize, deleteBlog);
 // ======> Delete Blogs By Query Params <=======
 router.delete('/blogs',authenticate, authorizeByQuery, deleteByQuery);
 
+//-----------------------API for wrong route-of-API--------------------------------->>>
+router.all("/*", function (req, res) {
+    return res.status(400).send({status: false,message: "Path Not Found"});
+ });
+ 
+
 module.exports= router;
