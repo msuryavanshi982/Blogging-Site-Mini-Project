@@ -18,7 +18,14 @@ router.post("/blogs", auth.authentication,blogController.createBlog);
 router.get("/blogs", auth.authentication, blogController.getBlogs);
 
 //______________________________put api (blog updation)_______________________________________>>>
-router.put("/blogs/:blogId", auth.authentication,auth.authorization,blogController.updatedBlog);
+// router.put("/blogs/:blogId", auth.authentication,auth.authorization,blogController.updatedBlog);
+router.put(
+  "/blogs/:blogId",
+  auth.authentication,
+  auth.authorization,
+  blogController.updateblogs
+);
+
 
 //_______________________________delete api-1_________________________________________________>>>
 router.delete("/blogs/:blogId", auth.authentication,auth.authorization,blogController.deletedBlog);

@@ -77,49 +77,98 @@ const getBlogs = async (req, res) => {
 }
 //_____update api_______________________________________________________________________>>>
 
-const updatedBlog = async function (req, res) {
-  try {
-    const blogId = req.params.blogId;
-    const blogData = req.body;
+// const updatedBlog = async function (req, res) {
+//   try {
+    // const blogId = req.params.blogId;
+    // const blogData = req.body;
 
-    let { title, body, tags, subcategory } = blogData;
-    if (!isValidObjectId(blogId))
-      return res.status(404).send({status: false,msg: "Blog Is Not Found , Please Enter Valid Blog Id"});
+    // let { title, body, tags, subcategory } = blogData;
+    // if (!isValidObjectId(blogId))
+    //   return res.status(404).send({status: false,msg: "Blog Is Not Found , Please Enter Valid Blog Id"});
 
-    if (Object.keys(blogData).length == 0){
-      return res.status(400).send({ status: false, msg: "Body is required" });
-    }
+    // if (Object.keys(blogData).length == 0){
+    //   return res.status(400).send({ status: false, msg: "Body is required" });
+    // }
 
-      if(title || title==""){
-        if (!isEmpty(title)) {
-          return res.status(400).send({ status: false, msg: "Please provide title" });
-        }
-        if(!isValidName(title)){
-          return res.status(400).send({ status: false, msg: "title should be alphabets only" });
-        }
-      }
-      if(body || body ==""){
-        if (!isEmpty(body)) {
-          return res.status(400).send({ status: false, msg: "Please provide body of blog" });
-        }
-      }
-      if(tags || tags== ""){
-        if (!isEmpty(tags)) {
-          return res.status(400).send({ status: false, msg: "Please provide tags" });
-        }
-      }
-      if(subcategory || subcategory== ""){
-        if (!isEmpty(subcategory)) {
-          return res.status(400).send({ status: false, msg: "Please provide subcategory" });
-        }
-      }
+    //   if(title || title==""){
+    //     if (!isEmpty(title)) {
+    //       return res.status(400).send({ status: false, msg: "Please provide title" });
+    //     }
+    //     if(!isValidName(title)){
+    //       return res.status(400).send({ status: false, msg: "title should be alphabets only" });
+    //     }
+    //   }
+    //   if(body || body ==""){
+    //     if (!isEmpty(body)) {
+    //       return res.status(400).send({ status: false, msg: "Please provide body of blog" });
+    //     }
+    //   }
+    //   if(tags || tags== ""){
+    //     if (!isEmpty(tags)) {
+    //       return res.status(400).send({ status: false, msg: "Please provide tags" });
+    //     }
+    //   }
+    //   if(subcategory || subcategory== ""){
+    //     if (!isEmpty(subcategory)) {
+    //       return res.status(400).send({ status: false, msg: "Please provide subcategory" });
+    //     }
+    //   }
 
-    let blog = await blogModel.findOneAndUpdate({ _id: blogId, isDeleted: false },{$set: {isPublished: true,body: body,title: title,publishedAt: new Date()},$push: { tags: tags, subcategory: subcategory }},{ new: true });
-    return res.status(200).send({ status: true, msg: "Blog updated successfully",data: blog });
-  } catch (error) {
-    return res.status(500).send({ status: false, Error: error.message });
-  }
-};
+    // let blog = await blogModel.findOneAndUpdate({ _id: blogId, isDeleted: false },{$set: {isPublished: true,body: body,title: title,publishedAt: new Date()},$push: { tags: tags, subcategory: subcategory }},{ new: true });
+    // return res.status(200).send({ status: true, msg: "Blog updated successfully",data: blog });
+
+
+    //-------------------------------------------------------
+
+    const updateBlogs = async (req, res) => {
+      try {
+        let alldata = req.body;
+        let blogId = req.params.blogId;
+
+        if (Object.keys(alldata).length == 0)
+          return res
+            .status(400)
+            .send({
+              status: false,
+              msg: "Please Enter Blog Details For Updating",
+            });
+
+        if (!blogId)
+          return res
+            .status(400)
+            .send({ status: false, msg: "Blog Id is required" });
+
+        let findBlogId = await blogModel.findById(blogId);
+
+        if (findBlogId.isDeleted == true) {
+          return res
+            .status(404)
+            .send({ status: false, msg: "Blogs already deleted" });
+        }
+
+        let updatedBlog = await blogModel.findOneAndUpdate(
+          { _id: blogId },
+          {
+            $set: {
+              title: alldata.title,
+              body: alldata.body,
+              category: alldata.category,
+              publishedAt: new Date(),
+              isPublished: true,
+            },
+            $push: { tags: req.body.tags, subcategory: req.body.subcategory },
+          },
+          { new: true, upsert: true }
+        );
+        return res.status(200).send({ status: true, msg: updatedBlog });
+      } catch (err) {
+        res.status(500).send({ status: false, msg: err.message });
+      }
+    };
+  // } catch (error) {
+  //   return res.status(500).send({ status: false, Error: error.message });
+  // }
+// };
 //_______delete blog api 1________________________________________________________>>>
 
 const deletedBlog = async (req, res) => {
@@ -154,7 +203,8 @@ const deleteByQueryParams = async function (req, res) {
 
 module.exports.createBlog = createBlog;
 module.exports.getBlogs = getBlogs;
-module.exports.updatedBlog = updatedBlog;
+// module.exports.updatedBlog = updatedBlog;
+module.exports.updateblogs = updateBlogs;
 module.exports.deletedBlog = deletedBlog;
 module.exports.deleteByQueryParams = deleteByQueryParams;
 
